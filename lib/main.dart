@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'bloc/user_bloc.dart';
-import 'repositories/user_repository.dart';
-import 'screens/user_screen.dart';
+
+import 'data/repositories/auth_repository.dart';
+import 'logic/bloc/auth_bloc.dart';
+import 'routes/app_routes.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [
+          BlocProvider(create: (_) => AuthBloc(AuthRepository())),
+        ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,10 +23,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BlocProvider(
-        create: (context) => UserBloc(userRepository: UserRepository()),
-        child: UserScreen(),
-      ),
+      initialRoute: '/',
+      routes: appRoutes
     );
   }
 }
