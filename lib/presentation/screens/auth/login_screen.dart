@@ -6,8 +6,15 @@ import '../../../logic/bloc/auth_state.dart';
 import '../dashboard/dashboard_screen.dart';
 import 'widgets/login_form.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String? _errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +30,31 @@ class LoginScreen extends StatelessWidget {
             );
           } else if (state is AuthFailure) {
             // If login fails, show an error message
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Login failed: ${state.message}')),
-            );
+            setState(() {
+              _errorMessage = state.message;
+            });
           }
         },
-        child: const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: LoginForm(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const LoginForm(),
+              if (_errorMessage != null) 
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Text(
+                    _errorMessage!,
+                    style: const TextStyle(
+                      color: Colors.red, // Red color for error
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
